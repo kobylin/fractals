@@ -436,7 +436,6 @@ function destructCanvas() {
 
 initCanvas();
 
-
 let resizeTimer;
 window.addEventListener("resize", () => {
     clearTimeout(resizeTimer);
@@ -514,3 +513,28 @@ document
     .addEventListener("change", e => {
         settings.treeColor = e.target.value;
     });
+
+function initIframes() {
+    const iframeProps = [
+        "width",
+        "height",
+        "scrolling",
+        "frameborder",
+        "allow",
+        "src"
+    ];
+
+    setTimeout(() => {
+        document.querySelectorAll("iframe-async").forEach(iframeTemplate => {
+            const iframe = document.createElement("iframe");
+
+            iframeProps.forEach(prop => {
+                iframe.setAttribute(prop, iframeTemplate.getAttribute(prop));
+            });
+
+            iframeTemplate.parentNode.replaceChild(iframe, iframeTemplate);
+        });
+    }, 1000);
+}
+
+initIframes();

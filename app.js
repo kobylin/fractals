@@ -1,3 +1,13 @@
+const settings = {
+    isStaticBackground: false,
+    showFlies: true,
+    showFps: false,
+    eraseBackground: true,
+    backgroundColor: "#ffffff",
+    treeColor: "#000000",
+    isStaticTreeColor: false
+};
+
 const sketch = p => {
     let width;
     let height;
@@ -23,7 +33,7 @@ const sketch = p => {
 
     p.setup = () => {
         const canvasParent = document.getElementById("canvas");
-        
+
         let width = canvasParent.clientWidth;
         let height = canvasParent.clientHeight;
 
@@ -76,9 +86,11 @@ const sketch = p => {
         p.rotate(p.PI);
         p.translate(-p.width, -p.height);
 
-        p.background(
-            getBackgroundColor(morningColor, nightColor, backgroundColorT)
-        );
+        if (settings.eraseBackground) {
+            p.background(
+                getBackgroundColor(morningColor, nightColor, backgroundColorT)
+            );
+        }
 
         backgroundColorT += backgroundColorTStep;
 
@@ -89,6 +101,8 @@ const sketch = p => {
         if (trunkLength < trunkLengthMax) {
             trunkLength += trunkLengthStep;
             trunkLengthStep *= 0.99999;
+        } else {
+            trunkLength = 10;
         }
 
         tree.trunkLength = trunkLength;
@@ -98,10 +112,15 @@ const sketch = p => {
 
         t += tStep;
 
-        walkers.forEach(w => w.update(t));
-        walkers.forEach(w => w.draw());
+        if (settings.showFlies) {
+            walkers.forEach(w => w.update(t));
+            walkers.forEach(w => w.draw());
+        }
+
         p.resetMatrix();
-        p.text(p.frameRate().toFixed(0), 100, 100);
+        if (settings.showFps) {
+            p.text(p.frameRate().toFixed(0), 100, 100);
+        }
     };
 
     function lengF(l, depth, side) {
@@ -150,15 +169,21 @@ const sketch = p => {
     }
 
     function getBackgroundColor(a, b, t) {
-        return p.lerpColor(a, b, t);
-        return 255;
+        if (settings.isStaticBackground) {
+            return settings.backgroundColor;
+        } else {
+            return p.lerpColor(a, b, t);
+        }
     }
 
     function getTreeColor(t) {
+        if (settings.isStaticTreeColor) {
+            return settings.treeColor;
+        }
         return p.color(
-            10,
+            p.map(cycledNoise(100, t), 0, 1, 0, 255),
             p.map(cycledNoise(10000, t), 0, 1, 0, 255),
-            p.map(cycledNoise(90000, t), 0, 1, 0, 100)
+            p.map(cycledNoise(90000, t), 0, 1, 0, 255)
         );
     }
 
@@ -399,13 +424,93 @@ function roundTo(value, digits) {
     return parseFloat(value.toFixed(digits));
 }
 
-let myp5 = new p5(sketch);
+let myp5;
+
+function initCanvas() {
+    myp5 = new p5(sketch);
+}
+
+function destructCanvas() {
+    myp5.remove();
+}
+
+initCanvas();
+
 
 let resizeTimer;
 window.addEventListener("resize", () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(function() {
-        myp5.remove();
-        myp5 = new p5(sketch);
+        destructCanvas();
+        initCanvas();
     }, 400);
 });
+
+document
+    .querySelector(".controls__reset-button")
+    .addEventListener("click", () => {
+        destructCanvas();
+        initCanvas();
+    });
+
+document.querySelector(".controls_options-static-background").checked =
+    settings.isStaticBackground;
+
+document
+    .querySelector(".controls_options-static-background")
+    .addEventListener("click", e => {
+        settings.isStaticBackground = e.target.checked;
+    });
+
+document.querySelector(".controls_options-show-flies").checked =
+    settings.showFlies;
+
+document
+    .querySelector(".controls_options-show-flies")
+    .addEventListener("click", e => {
+        settings.showFlies = e.target.checked;
+    });
+
+document.querySelector(".controls_options-show-fps").checked = settings.showFps;
+
+document
+    .querySelector(".controls_options-show-fps")
+    .addEventListener("click", e => {
+        settings.showFps = e.target.checked;
+    });
+
+document.querySelector(".controls_options-erase-background").checked =
+    settings.eraseBackground;
+
+document
+    .querySelector(".controls_options-erase-background")
+    .addEventListener("click", e => {
+        settings.eraseBackground = e.target.checked;
+    });
+
+document.querySelector(".controls_options-background-color").value =
+    settings.backgroundColor;
+
+document
+    .querySelector(".controls_options-background-color")
+    .addEventListener("change", e => {
+        settings.backgroundColor = e.target.value;
+    });
+
+document.querySelector(".controls_options-static-tree-color").checked =
+    settings.isStaticBackground;
+
+document
+    .querySelector(".controls_options-static-tree-color")
+    .addEventListener("click", e => {
+        settings.isStaticTreeColor = e.target.checked;
+    });
+
+document.querySelector(".controls_options-tree-color").value =
+    settings.treeColor;
+
+document
+    .querySelector(".controls_options-tree-color")
+    .addEventListener("change", e => {
+        settings.treeColor = e.target.value;
+    });

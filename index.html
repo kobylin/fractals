@@ -8,6 +8,7 @@
             padding: 0;
             margin: 0;
             overflow: hidden;
+            font-family: monospace; 
         }
 
         .content {
@@ -24,10 +25,31 @@
             width: 20%;
             height: 100%;
         }
+
+        .controls {
+            position: fixed;
+            bottom: 10px;
+            left: 20px;
+        }
+
+        .controls_options {
+            background: #ffffff6e;
+            padding: 10px;
+        }
+
+        .controls_options > * {
+            display: block;
+            line-height: 30px;
+        }
+        .controls__reset-button {
+            margin-top: 20px;
+            font-family: monospace;
+        }
     </style>
+    <!-- <link rel="stylesheet" type="text/css" href="lib/fa.css"> -->
     <body>
         <script type="text/javascript" src="lib/p5.js"></script>
-        <script type="text/javascript" src="app.js"></script>
+        <script type="text/javascript" src="app.js" defer></script>
 
         <div class="content">
             <div id="canvas"></div>
@@ -41,6 +63,38 @@
                     src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/769251867&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"
                 ></iframe>
             </div>
+        </div>
+        <div class="controls">
+            <div class="controls_options">
+                <div class="controls_options-background-color-container">
+                    <label>
+                        Static background
+                        <input type="checkbox" class="controls_options-static-background" />
+                    </label>
+                    <input type="color" class="controls_options-background-color">
+                </div>
+                <div class="">
+                     <label>
+                        Static tree color
+                        <input type="checkbox" class="controls_options-static-tree-color" />
+                    </label>
+                    <input type="color" class="controls_options-tree-color">
+                </div>
+                <label>
+                    Show flies
+                    <input type="checkbox" class="controls_options-show-flies" />
+                </label>
+                <label>
+                    Show FPS
+                    <input type="checkbox" class="controls_options-show-fps" />
+                </label>
+                <label>
+                    Erase background
+                    <input type="checkbox" class="controls_options-erase-background" />
+                </label>
+                <button class="controls__reset-button">Reset</button>
+            </div>
+            <!-- TODO: other tree params -->
         </div>
     </body>
 </html>

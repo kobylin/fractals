@@ -8,6 +8,10 @@ const settings = {
     isStaticTreeColor: false
 };
 
+const random = (min, max) => {
+    return Math.random() * (max - min) + min;
+};
+
 const sketch = p => {
     let width;
     let height;
